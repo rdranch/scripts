@@ -1,0 +1,141 @@
+import urllib, sys, os
+from urllib.request import Request, urlopen
+from google_drive_downloader import GoogleDriveDownloader as gdd
+
+#Installs "Elites skins" in Rainbow Six Siege automatically
+#through an exploit that allows you to modify the .save file.
+
+os.system('cls')
+
+print("***Credit to Darkon for creating this script and Wilder for the file.***")
+print("[*]Chose one of the following:")
+print("1. Install all elites.")
+print("2. Uninstall.")
+print("3. Exit.")
+option = input("> ")
+
+while option not in ['1', '2', '3']:
+	os.system('cls')
+	#print("[!] This only works on STEAM right now. You can add R6 as a non-steam game and that should work too.")
+	print("Chose one of the following:")
+	print("1. Install all elites.")
+	print("2. Uninstall.")
+	print("3. Exit.")
+	option = input("> ")
+
+
+'''
+The first option, to install the program.
+1. Looks up your ubisoft ID on R6tracker. R6Tracker contains a permanent link section
+which is HTML scrapped and saved here.
+2. Renames your 1.save to 2.save before continuing. Checks to see if 2.save already exists because if it does, this program doesn't
+need to be ran.
+3. Downloads the Elite 1.save file off private google drive.
+4. Creates a text file that keeps track of the ID's installed so that if the user decides to uninstall the program,
+they can do it with ease.
+'''
+if option == '3':
+	sys.exit(1)
+elif option == '1':
+	os.system('cls')
+	print("[*] Warning! Go to Ubisoft settings, and turn off 'Cloud save sync for supported games' before you continue.")
+	print("[*] Quit out of Ubisoft then. (Do not simply click 'X' on it).")
+	print("[!] Press enter to continue once this is done.")
+	non = input('\n')
+	#Grabs your user ID
+	while True:
+		ver = input("What is your launcher?:\n1. Steam\n2. UPlay/EpicGames\n3. Other\n> ")
+		if ver == "3": 
+			print("[!] You must run this on Steam or UPlay/EpicGames for it to work! Exiting...")
+			input()
+			sys.exit()
+		elif ver == "2":
+			ver = "635" #UPlay
+		elif ver == "1":
+			ver = "1843" #Ubisoft
+
+		name = input("\n[*] What is your account name?: ")
+		if (name.lower() == "exit"):
+			print("Exiting...")
+			sys.exit(1)
+		print("[!] Finding your Ubisoft ID. One moment...")
+		try:
+			url = "https://r6.tracker.network/profile/pc/" + name
+			r = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+			webpage = urlopen(r).read()
+			break
+		except urllib.error.HTTPError as e:
+			print("[!] An error occured. Re-enter your username or type 'exit' to exit.")
+
+	web = webpage.decode('utf-8').splitlines(True)
+	for line in web:
+		if len(line) >= 41:
+			if line[0:41] == "<input id=\"perm-link\" type=\"text\" value=\"":
+				ID = line[79:115]
+				print("Your ID: " + line[79:115])
+			else:
+				pass
+		pass
+
+	#Renames your file to 2.save
+	try:
+		if os.path.isfile('C:/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/' + ID + "/" + ver + "/2.save"):
+			print("[!] An error has occured. Run delete elite and try again.")
+			input()
+			sys.exit(1)
+		else:
+			os.rename(r'C:/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/' + ID + "/" + ver + "/1.save", 
+				r'C:/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/' + ID + "/" + ver + "/2.save")
+	except:
+		print("[!] An error has occurred. Try to log into this account and try again.")
+		input()
+		sys.exit()
+
+	#Downloads the new 1.save into the file location
+	if os.path.isdir("C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames\\" + ID + "\\"+ver+"\\"):
+		data = gdd.download_file_from_google_drive(file_id='1II9AcE7kLdiFFF14fYlf8HV83yyyDryo',
+                                    dest_path='C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames\\' + ID + "\\"+ver+"\\" + "\\1.save",
+                                    unzip=True)
+		os.system('cls')
+	else:
+		pass
+
+	#Creates a file to keep track of your ID's
+	with open('C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames\\elites.txt', 'a+') as y:
+		value = True
+		for line in y:
+			if ID == line.strip("\n"):
+				value = False
+				break
+		if value:
+			y.write(ID + "\n")
+	print("[*] Elites installed successfully!")
+	input()
+elif option == "2": #Removes all 1.save's installed and renames 2.save back to 1.save
+	os.system('cls')
+	print("[*] Warning! Go to Ubisoft settings, and turn off 'Cloud save sync for supported games' before you continue.")
+	print("[*] Quit out of Ubisoft then. (Do not simply click 'X' on it).")
+	print("[!] Press enter to continue once this is done.")
+	non = input('\n')
+	print("[!] Deleting elites...")
+	try:
+		with open('C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames\\elites.txt', 'r') as file:
+			for line in file:
+				line = line.strip("\n")
+				os.remove("C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames\\" +
+					line + "/1843/" + "\\" + "1.save")
+				os.rename(r'C:/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/' + line + "/" + ver + "/2.save", 
+					r'C:/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/' + line + "/" + ver + "/1.save")
+		os.remove('C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\savegames\\elites.txt')
+		print("[*] Elites deleted successfully!")
+		input()
+	except:
+		print("[*] Nothing to delete. Quitting.")
+		input()
+	sys.exit()
+
+'''
+Second option, Uninstall
+1. Opens the file saved with all the users ID's
+2. For every ID found in the file, it delete's 1.save and renames 2.save back to 1.save
+'''
