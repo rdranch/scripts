@@ -7,7 +7,6 @@ from google_drive_downloader import GoogleDriveDownloader as gdd
 
 os.system('cls')
 
-print("***Credit to Darkon for creating this script and Wilder for the file.***")
 print("[*]Chose one of the following:")
 print("1. Install all elites.")
 print("2. Uninstall.")
