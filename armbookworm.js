@@ -14,7 +14,7 @@
 		v += 1;
 		new_id += document.documentElement.innerHTML.slice(v, v+1);
 	}
-
+	new_id = new_id.replace(/\D/g,'');
 
 
 	r.open("GET", "http://csec380-core.csec.rit.edu:86/add_comment.php?id=" + id + "&comment=" + string, true);
