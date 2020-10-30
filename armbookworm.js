@@ -8,10 +8,10 @@
 	const string = encodeURI(new Date() + ": Russell added you through the user " + $("#name").text()); 
 
 	var v = document.documentElement.innerHTML.indexOf("id=") + 3;
-	var new_id = document.documentElement.innerHTML.slice(v, v+1)
+	var new_id = document.documentElement.innerHTML.slice(v, v+1);
 
 	while (!(isNaN(parseInt(document.documentElement.innerHTML.slice(v, v+1))))){
-		v += 1
+		v += 1;
 		new_id += document.documentElement.innerHTML.slice(v, v+1);
 	}
 
