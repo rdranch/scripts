@@ -1,1 +1,1 @@
-alert(1);
+eval(alert(1));
