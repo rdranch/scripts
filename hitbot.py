@@ -36,11 +36,12 @@ async def on_message(message):
 
   args = message.content.split()
   if args[0] == '.list':
+    msg = "Here is the list:\n"
     with open('list.txt') as f:
       lines = f.readlines()
-      await message.channel.send('Here is the list:')
       for line in lines:
-        await message.channel.send(line.strip("\n"))
+        msg += line
+      await message.channel.send(msg)
   elif args[0] == ".help":
     await message.channel.send("Here are the commands:\n.help\n.list\n.add\n.remove")
   elif args[0] == '.add' and len(args) == 2:
@@ -65,4 +66,4 @@ async def on_message(message):
 
 keep_alive()
 
-client.run('{redacted}')
+client.run('ODA5ODg1Njk4MDIyNDQxMDAx.YCbm1Q.ZZ7269kqDqkbiPQdFflcGb3UVEs')
