@@ -66,4 +66,4 @@ async def on_message(message):
 
 keep_alive()
 
-client.run('ODA5ODg1Njk4MDIyNDQxMDAx.YCbm1Q.ZZ7269kqDqkbiPQdFflcGb3UVEs')
+client.run('{ redacted }')
