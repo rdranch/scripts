@@ -62,8 +62,8 @@ async def on_message(message):
   elif args[0][0] == ".":
     await message.channel.send("Incorrect arguments.")
   else:
-    pass
+    await message.delete()
 
 keep_alive()
 
-client.run('{ redacted }')
+client.run(' {redacted} ')
