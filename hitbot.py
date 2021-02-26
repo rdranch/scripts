@@ -45,7 +45,7 @@ async def on_message(message):
     msg = list()
     await message.channel.send(msg)
   elif args[0] == ".help":
-    await message.channel.send("Here are the commands:\n.help\n.list\n.add\n.remove")
+    await message.channel.send("Here are the commands:\n.help\n.list\n.add\n.remove\n.search")
   elif args[0] == '.add' and len(args) == 2:
     if exists(args[1]):
       await message.channel.send("This user is already in the list.")
@@ -58,6 +58,11 @@ async def on_message(message):
       await message.channel.send("{user} has been removed from the list.".format(user=str(args[1])))
     else:
       await message.channel.send("User is not in the list.")
+  elif args[0] == '.search' and len(args) == 2:
+    if exists(args[1]):
+      await message.channel.send("{user} is in the list.".format(user=str(args[1])))
+    else:
+      await message.channel.send("{user} is not in the list.".format(user=str(args[1])))
   elif args[0][0] == ".":
     await message.channel.send("Incorrect arguments.")
   else:
@@ -65,4 +70,4 @@ async def on_message(message):
 
 keep_alive()
 
-client.run(' {redcated} ')
+client.run('ODA5ODg1Njk4MDIyNDQxMDAx.YCbm1Q.DDVbysy-Z2bgo3bLa_TujiBIbMU')
