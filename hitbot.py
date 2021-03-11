@@ -43,24 +43,24 @@ async def on_message(message):
   if message.author == client.user:
     return
   args = message.content.split()
-  if args[0] == '.list':
+  if args[0].lower() == '.list':
     msg = list()
     await message.channel.send(msg)
-  elif args[0] == ".help":
-    await message.channel.send("Here are the commands:\n.help\n.list\n.add\n.remove\n.search")
-  elif args[0] == '.add' and len(args) == 2:
+  elif args[0].lower() == ".help":
+    await message.channel.send("Here are the commands:\n.help - Pulls this page\n.list - Prints the list out\n.add [user] - Add a specific user to the list\n.remove [user] - Removes a user from the list\n.search [user] - Searches for a user in the list.")
+  elif args[0].lower() == '.add' and len(args) == 2:
     if exists(args[1]):
       await message.channel.send("This user is already in the list.")
     else:
       add(args[1])
       await message.channel.send("{user} has been added to the list.".format(user=str(args[1])))
-  elif args[0] == '.remove' and len(args) == 2:
+  elif args[0].lower() == '.remove' and len(args) == 2:
     if exists(args[1]):
       remove(args[1])
       await message.channel.send("{user} has been removed from the list.".format(user=str(args[1])))
     else:
       await message.channel.send("User is not in the list.")
-  elif args[0] == '.search' and len(args) == 2:
+  elif args[0].lower() == '.search' and len(args) == 2:
     if exists(args[1]):
       await message.channel.send("{user} is in the list.".format(user=str(args[1])))
     else:
