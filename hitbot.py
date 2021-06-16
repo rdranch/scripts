@@ -5,71 +5,97 @@ from keep_alive import keep_alive
 
 client = discord.Client()
 
-def exists(user):
-  user = user + "\n"
-  with open('list.txt', 'r+') as f:
-    return user in f.readlines()
 
-def remove(user):
-  with open('list.txt', 'r+') as f:
-    user = user + "\n"
-    lines = f.readlines()
-    f.seek(0)
-    f.truncate(0)
-    lines.remove(user)
-    f.writelines(lines)
-        
+def add(last_message, user):
+  s = ""
+  try:
+    new_lst = last_message.split("\n")
+    new_lst.append(user)
+    for n in new_lst:
+      s += (n + "\n")
+    return s
+  except:
+    return user
 
-def add(user):
-  user = user + "\n"
-  with open('list.txt', 'a+') as f:
-    f.write(user)
+def remove(last_message, user):
+  s = ""
+  if len(last_message) <= 1 or last_message == "> Cannot remove last item in list.":
+    return False
+  new_lst = last_message.split("\n")
+  if user in new_lst:
+    new_lst.remove(user)
+    for n in new_lst:
+      s += (n + "\n")
+    return s
+  else:
+    return None
 
-def list():
-  msg = "Here is the list:\n"
-  with open('list.txt', 'r') as f:
-    lines = f.readlines()
-    for line in lines:
-      msg += line
-    return msg
+def search(last_message, user):
+  try:
+    new_lst = last_message.split("\n")
+    print(user + " " + user in new_lst)
+    return (user in new_lst)
+  except:
+    return False
+
+def help():
+  return "> Here are the commands:\n.help - Pulls this page\n.add [user] - Add a specific user to the list\n.remove [user] - Removes a user from the list\n.search [user] - Searches for a user in the list."
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
 
-
 @client.event
 async def on_message(message):
+  last_message = await message.channel.history(limit=2).flatten()
+  
+  try:
+    last_message = last_message[1].content
+  except IndexError:
+    pass
   if message.author == client.user:
     return
+
   args = message.content.split()
-  if args[0].lower() == '.list':
-    msg = list()
-    await message.channel.send(msg)
+  if (len(args) > 2):
+    await message.channel.purge(limit=10)
+    await message.channel.send("> There cannot be spaces in usernames.")
+    await message.channel.send(last_message)
   elif args[0].lower() == ".help":
-    await message.channel.send("Here are the commands:\n.help - Pulls this page\n.list - Prints the list out\n.add [user] - Add a specific user to the list\n.remove [user] - Removes a user from the list\n.search [user] - Searches for a user in the list.")
-  elif args[0].lower() == '.add' and len(args) == 2:
-    if exists(args[1]):
-      await message.channel.send("This user is already in the list.")
+    await message.channel.purge(limit=10)
+    await message.channel.send(help())
+    await message.channel.send(last_message)
+  elif args[0].lower() == ".add":
+    await message.channel.purge(limit=10)
+    if search(last_message, args[1]):
+      await message.channel.send(f"> {args[1]} already exists in list.")
+      if len(last_message) > 1:
+        await message.channel.send(last_message)
+      else: pass
     else:
-      add(args[1])
-      await message.channel.send("{user} has been added to the list.".format(user=str(args[1])))
-  elif args[0].lower() == '.remove' and len(args) == 2:
-    if exists(args[1]):
-      remove(args[1])
-      await message.channel.send("{user} has been removed from the list.".format(user=str(args[1])))
+      await message.channel.send(add(last_message, args[1]))
+  elif args[0].lower() == ".remove":
+    rm = remove(last_message, args[1])
+    await message.channel.purge(limit=10)
+    if rm is None:
+      await message.channel.send(f"> {args[1]} not in list.")
+      await message.channel.send(last_message)
+    elif rm == False:
+      pass
     else:
-      await message.channel.send("User is not in the list.")
-  elif args[0].lower() == '.search' and len(args) == 2:
-    if exists(args[1]):
-      await message.channel.send("{user} is in the list.".format(user=str(args[1])))
+      await message.channel.send(rm)
+  elif args[0].lower() == ".search":
+    result = search(last_message, args[1])
+    await message.channel.purge(limit=10)
+    if result:
+      await message.channel.send(f"> {args[1]} is in list.")
+      await message.channel.send(last_message)
     else:
-      await message.channel.send("{user} is not in the list.".format(user=str(args[1])))
-  elif args[0][0] == ".":
-    await message.channel.send("Incorrect arguments.")
+      await message.channel.send(f"> {args[1]} not in list.")
+      await message.channel.send(last_message)
   else:
     await message.delete()
 
 keep_alive()
 
-client.run(' {redacted} ')
+client.run('{ redacted }')
