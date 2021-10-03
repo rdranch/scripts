@@ -1,5 +1,5 @@
 """
-By RUssell Dranch
+By Russell Dranch
 Script O4
 Log file stuff
 """
