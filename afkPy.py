@@ -42,7 +42,7 @@ def macro(config, path):
     
     # Checks if Rainbow Six is open, will restart it if not.
     while True:
-        if "RainbowSix.exe" not in [p.name() for p in process_iter()]:
+        while "RainbowSix.exe" not in [p.name() for p in process_iter()]:
             print("[!] Siege crashed or closed. Stopping bot while it restarts.")
             startfile(path)
             sleep(120)
@@ -181,7 +181,7 @@ def check_open():
 
 if __name__ == "__main__":
     # Create title for exe
-    ctypes.windll.kernel32.SetConsoleTitleW("Bot coded by Darkon (Darkinator#3932) AKA The.Don_ (v.1.0 BETA)")
+    ctypes.windll.kernel32.SetConsoleTitleW("Bot coded by Darkon (Darkinator#3932) AKA The.Don_ (v.1.0)")
     multiprocessing.freeze_support()
 
     # Check if config file is created
